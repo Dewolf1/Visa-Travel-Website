@@ -1,9 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Globe2, ArrowRight, X, Send, ChevronDown, CheckCircle2, MessageCircle } from 'lucide-react';
-import { toast } from 'sonner';
-import { submitForm } from '../utils/formSubmit';
+import { Globe2, ArrowRight } from 'lucide-react';
+import { CountryDetailsModal } from './CountryDetailsModal';
 
 const countries = [
   { name: 'Kuwait',       flag: '🇰🇼', popular: true,  desc: 'Work & Visit Visas',    visaTypes: ['Work Visa', 'Visit Visa', 'Tourist Visa', 'Business Visa'] },
@@ -15,170 +13,7 @@ const countries = [
   { name: 'Russia',       flag: '🇷🇺', popular: false, desc: 'Tourist & Work Visas',    visaTypes: ['Tourist Visa', 'Work Visa', 'Business Visa', 'Student Visa'] },
 ];
 
-type Country = typeof countries[0];
-
-interface VisaModalProps {
-  country: Country;
-  onClose: () => void;
-}
-
-function VisaModal({ country, onClose }: VisaModalProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    visaType: '',
-    message: '',
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const [submitted, setSubmitted] = useState(false);
-  const [waLink, setWaLink] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const { waLink, emailSent } = await submitForm({
-      subject: `Visa Application — ${country.name}`,
-      name: formData.name,
-      phone: formData.phone,
-      email: formData.email,
-      country: country.name,
-      visa_type: formData.visaType,
-      message: formData.message,
-    });
-    setWaLink(waLink);
-    setIsSubmitting(false);
-    setSubmitted(true);
-    toast.success(
-      emailSent ? `Application submitted for ${country.name}!` : 'Details received!',
-      { description: 'Our expert will contact you within 24 hours.', duration: 5000 }
-    );
-  };
-
-  const modalContent = (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.88, y: 32 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.88, y: 32 }}
-        transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-        className="relative bg-white rounded-3xl shadow-[0_32px_80px_-10px_rgba(10,22,40,0.35)] w-full max-w-lg overflow-hidden max-h-[90vh] overflow-y-auto"
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="bg-gradient-to-br from-[#0A1628] via-[#0f1e35] to-[#1E2D44] px-6 md:px-8 pt-6 md:pt-8 pb-8 md:pb-10 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(201,168,76,0.18),transparent)]" />
-          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent" />
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all hover:rotate-90 duration-300"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-          <div className="relative z-10 flex items-center gap-4">
-            <span className="text-5xl drop-shadow-lg">{country.flag}</span>
-            <div>
-              <p className="text-[#C9A84C] text-xs font-bold tracking-widest uppercase mb-1">Visa Application</p>
-              <h3 className="text-xl md:text-2xl font-serif text-white font-bold">{country.name}</h3>
-              <p className="text-blue-200/70 text-xs md:text-sm mt-0.5">{country.desc}</p>
-            </div>
-          </div>
-        </div>
-
-        {submitted ? (
-          /* ── Success state ── */
-          <div className="px-6 md:px-8 py-8 flex flex-col items-center text-center gap-4">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-              <CheckCircle2 className="w-8 h-8 text-green-500" />
-            </div>
-            <h4 className="text-xl font-serif font-bold text-primary">Application Received!</h4>
-            <p className="text-muted-foreground text-sm max-w-xs">
-              We'll review your {country.name} visa application and contact you within 24 hours.
-              For the fastest response, send it on WhatsApp too.
-            </p>
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#1ebe5d] transition-all shadow-lg w-full justify-center"
-            >
-              <MessageCircle className="w-4 h-4" /> Send via WhatsApp
-            </a>
-            <button onClick={onClose} className="text-sm text-muted-foreground underline hover:text-primary">
-              Close
-            </button>
-          </div>
-        ) : (
-          /* ── Form ── */
-          <form onSubmit={handleSubmit} className="px-6 md:px-8 py-5 md:py-7 space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-[10px] font-semibold text-[#0A1628] mb-1.5 uppercase tracking-wide">Full Name *</label>
-                <input name="name" type="text" required value={formData.name} onChange={handleChange}
-                  placeholder="John Doe"
-                  className="w-full px-3.5 py-3 rounded-xl bg-[#F4EEDF]/60 border border-[rgba(10,22,40,0.1)] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/50 focus:border-[#C9A84C] transition-all text-sm" />
-              </div>
-              <div>
-                <label className="block text-[10px] font-semibold text-[#0A1628] mb-1.5 uppercase tracking-wide">Phone *</label>
-                <input name="phone" type="tel" required value={formData.phone} onChange={handleChange}
-                  placeholder="+91 XXXXX"
-                  className="w-full px-3.5 py-3 rounded-xl bg-[#F4EEDF]/60 border border-[rgba(10,22,40,0.1)] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/50 focus:border-[#C9A84C] transition-all text-sm" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-[10px] font-semibold text-[#0A1628] mb-1.5 uppercase tracking-wide">Email</label>
-              <input name="email" type="email" value={formData.email} onChange={handleChange}
-                placeholder="you@example.com"
-                className="w-full px-3.5 py-3 rounded-xl bg-[#F4EEDF]/60 border border-[rgba(10,22,40,0.1)] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/50 focus:border-[#C9A84C] transition-all text-sm" />
-            </div>
-
-            <div className="relative">
-              <label className="block text-[10px] font-semibold text-[#0A1628] mb-1.5 uppercase tracking-wide">Visa Type *</label>
-              <select name="visaType" required value={formData.visaType} onChange={handleChange}
-                className="w-full px-3.5 py-3 rounded-xl bg-[#F4EEDF]/60 border border-[rgba(10,22,40,0.1)] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/50 focus:border-[#C9A84C] transition-all text-sm appearance-none">
-                <option value="">Select visa type</option>
-                {country.visaTypes.map(vt => <option key={vt} value={vt}>{vt}</option>)}
-              </select>
-              <ChevronDown className="absolute right-4 bottom-3.5 w-4 h-4 text-[#64748B] pointer-events-none" />
-            </div>
-
-            <div>
-              <label className="block text-[10px] font-semibold text-[#0A1628] mb-1.5 uppercase tracking-wide">Message</label>
-              <textarea name="message" rows={3} value={formData.message} onChange={handleChange}
-                placeholder="Tell us more about your requirements..."
-                className="w-full px-3.5 py-3 rounded-xl bg-[#F4EEDF]/60 border border-[rgba(10,22,40,0.1)] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/50 focus:border-[#C9A84C] transition-all text-sm resize-none" />
-            </div>
-
-            <button type="submit" disabled={isSubmitting}
-              className="w-full bg-[#0A1628] text-white font-bold py-3.5 rounded-xl hover:bg-[#C9A84C] hover:text-[#0A1628] transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_8px_24px_-6px_rgba(10,22,40,0.4)] hover:shadow-[0_8px_24px_-6px_rgba(201,168,76,0.4)] disabled:opacity-70 group text-sm"
-            >
-              {isSubmitting
-                ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                : <><Send className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" /> Submit Application</>}
-            </button>
-          </form>
-        )}
-      </motion.div>
-    </motion.div>
-  );
-
-  return createPortal(modalContent, document.body);
-}
+export type Country = typeof countries[0];
 
 export function Countries() {
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
@@ -263,7 +98,7 @@ export function Countries() {
       {/* Modal — rendered via portal at body level */}
       <AnimatePresence>
         {selectedCountry && (
-          <VisaModal country={selectedCountry} onClose={closeModal} />
+          <CountryDetailsModal country={selectedCountry} onClose={closeModal} />
         )}
       </AnimatePresence>
     </>
