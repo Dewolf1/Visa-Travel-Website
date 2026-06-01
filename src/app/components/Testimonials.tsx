@@ -102,6 +102,23 @@ export function Testimonials() {
               <p className="text-lg text-blue-100/80 max-w-2xl mx-auto font-light">
                 Real reviews from real people who trusted us with their global journey.
               </p>
+              {/* Aggregate rating stats */}
+              <div className="flex flex-wrap items-center justify-center gap-6 mb-8">
+                <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-5 py-2.5">
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-secondary text-secondary" />
+                    ))}
+                  </div>
+                  <span className="text-white font-bold text-sm">4.9 / 5.0</span>
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-full px-5 py-2.5 text-sm text-white font-semibold">
+                  👥 34,000+ Happy Clients
+                </div>
+                <div className="bg-white/10 border border-white/20 rounded-full px-5 py-2.5 text-sm text-white font-semibold">
+                  ✔️ Google Verified Reviews
+                </div>
+              </div>
             </motion.div>
           </div>
 

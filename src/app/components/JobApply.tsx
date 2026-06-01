@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { Briefcase, MapPin, User, Phone, Mail, GraduationCap, ChevronDown, Send, CheckCircle2, ArrowRight } from 'lucide-react';
+import { submitForm } from '../utils/formSubmit';
 
 const JOB_CATEGORIES = [
   { id: 'cook', label: 'House Cook / Chef', icon: '👨‍🍳' },
@@ -55,11 +56,24 @@ export function JobApply() {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    // Simulate async (replace with real API call if needed)
-    await new Promise((r) => setTimeout(r, 800));
+    const jobLabel = JOB_CATEGORIES.find(j => j.id === data.jobCategory)?.label ?? data.jobCategory;
 
-    const jobLabel = JOB_CATEGORIES.find((j) => j.id === data.jobCategory)?.label ?? data.jobCategory;
+    // Submit via Web3Forms + get WhatsApp link
+    const { waLink } = await submitForm({
+      subject: 'Job Application — VisaOVisa',
+      name: data.fullName,
+      phone: data.phone,
+      email: data.email,
+      nationality: data.nationality,
+      destination_country: data.destination,
+      job_category: jobLabel,
+      experience: data.experience,
+      education: data.education,
+      languages: data.languages,
+      message: data.message,
+    });
 
+    // Build a detailed WhatsApp message for easier reading
     const waMsg = encodeURIComponent(
       `*JOB APPLICATION — VisaOVisa*\n\n` +
       `👤 Name: ${data.fullName}\n` +
@@ -73,8 +87,8 @@ export function JobApply() {
       `🗣️ Languages: ${data.languages || 'N/A'}\n` +
       `📝 Message: ${data.message || 'N/A'}`
     );
-    const link = `https://wa.me/919873005319?text=${waMsg}`;
-    setWhatsappLink(link);
+    const detailedLink = `https://wa.me/919873005319?text=${waMsg}`;
+    setWhatsappLink(detailedLink);
     setSubmitted(true);
     toast.success('Application submitted! We will contact you shortly.');
     reset();

@@ -1,26 +1,30 @@
 import { Youtube, Facebook, Instagram, MapPin, Phone, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
-import logo from '../../imports/image.png';
 
 export function Footer() {
   return (
     <footer className="bg-[#050B14] text-white pt-20 pb-10 border-t-4 border-secondary relative overflow-hidden">
       {/* Decorative background glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-secondary/10 blur-[100px] -z-10 rounded-full"></div>
-      
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
           <div className="lg:col-span-4">
-            <div className="bg-white/10 p-2 rounded-xl inline-block mb-6 backdrop-blur-sm border border-white/10">
-              <img src={logo} alt="VisaOVisa" className="h-14 w-auto brightness-0 invert" />
-            </div>
-            <div className="mb-5">
-              <p className="text-secondary font-semibold text-sm tracking-wide">Founded by</p>
-              <p className="text-white text-xl font-serif font-bold">Mohd Faisal Siddique</p>
+            {/* Founder block with photo */}
+            <div className="flex items-center gap-4 mb-5">
+              <img
+                src="/founder.jpg"
+                alt="Mohd Faisal Siddique"
+                className="w-14 h-14 rounded-full object-cover border-2 border-secondary shadow-lg flex-shrink-0"
+              />
+              <div>
+                <p className="text-secondary font-semibold text-xs tracking-wide uppercase mb-0.5">Founded by</p>
+                <p className="text-white text-lg font-serif font-bold leading-tight">Mohd Faisal Siddique</p>
+              </div>
             </div>
             <p className="text-blue-100/70 mb-8 font-light leading-relaxed pr-4 text-sm">
-              Your trusted partner for premium visa stamping, attestation, and global travel documentation services since 2019. We turn your travel dreams into reality.
+              Your trusted partner for Genuine visa stamping, attestation, and global travel documentation services since 2019. We turn your travel dreams into reality.
             </p>
-            
+
             <div className="flex gap-4">
               <a
                 href="https://www.youtube.com/@visaOvisa"
@@ -67,12 +71,14 @@ export function Footer() {
           <div className="lg:col-span-3">
             <h4 className="text-xl font-serif mb-6 text-secondary">Our Services</h4>
             <ul className="space-y-4 text-blue-100/80">
-              <li className="hover:text-white transition-colors cursor-pointer">Visa Stamping</li>
-              <li className="hover:text-white transition-colors cursor-pointer">GAMCA Medical</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Document Attestation</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Flight Booking</li>
-              <li className="hover:text-white transition-colors cursor-pointer">PCC Services</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Job Recruitment</li>
+              {['Visa Stamping', 'GAMCA Medical', 'Document Attestation', 'Flight Booking', 'Job Recruitment'].map(svc => (
+                <li key={svc}>
+                  <a href="#services" className="hover:text-secondary transition-colors cursor-pointer inline-flex items-center gap-1.5 group">
+                    <span className="w-1 h-1 rounded-full bg-secondary/50 group-hover:bg-secondary transition-colors" />
+                    {svc}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 

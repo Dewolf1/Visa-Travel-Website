@@ -103,13 +103,13 @@
     @apply bg-background text-foreground font-sans;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    overflow-x: clip; /* 'clip' does NOT create a scroll container — safe for position:fixed */
   }
 
   html {
     font-size: var(--font-size);
     scroll-behavior: smooth;
-    overflow-x: hidden;
+    /* NOTE: overflow-x must NOT be set on html — it breaks position:fixed */
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -295,3 +295,102 @@ html {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ── Page entry animation ── */
+/* IMPORTANT: do NOT use transform here — a transform on #root creates a new
+   containing block and breaks ALL position:fixed children (header, buttons, etc.) */
+@keyframes page-enter {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+#root {
+  animation: page-enter 0.4s ease forwards;
+  /* No overflow-x here — body has overflow-x:clip which is sufficient */
+}
+
+/* ── Smooth element transitions globally ── */
+a, button {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Modal body scroll lock helper ── */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* ── Float animation for decorative elements ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+/* ── Gold shimmer text animation ── */
+@keyframes gold-shine {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.text-gradient-gold-animated {
+  background: linear-gradient(90deg, #C9A84C 0%, #E6D08B 35%, #C9A84C 60%, #F0D87A 80%, #C9A84C 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gold-shine 3s linear infinite;
+}
+
+/* ── Country card hover ring ── */
+.country-ring {
+  box-shadow: 0 0 0 0 rgba(201, 168, 76, 0);
+  transition: box-shadow 0.3s ease;
+}
+
+.country-ring:hover {
+  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.4);
+}
+
+/* ── Embla carousel — prevent overflow bleed ── */
+.embla {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+/* ── Section transition glow ── */
+section {
+  position: relative;
+}
+
+/* ── Image loading shimmer placeholder ── */
+.img-placeholder {
+  background: linear-gradient(90deg, #f0ece4 25%, #faf8f5 50%, #f0ece4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ── Smooth height transitions ── */
+.transition-height {
+  transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Stagger children animation helper ── */
+.stagger-children > * {
+  animation: page-enter 0.4s ease forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }

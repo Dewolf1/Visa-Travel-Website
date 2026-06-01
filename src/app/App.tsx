@@ -12,6 +12,7 @@ import { VisaChecker } from './components/VisaChecker';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { BackToTop } from './components/BackToTop';
 import { JobApply } from './components/JobApply';
+import { StickyMobileCTA } from './components/StickyMobileCTA';
 import { Toaster } from 'sonner';
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
       <Footer />
       <WhatsAppButton />
       <BackToTop />
+      <StickyMobileCTA />
       <Toaster position="bottom-left" richColors closeButton />
     </div>
   );
