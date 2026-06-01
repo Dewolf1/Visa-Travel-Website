@@ -32,7 +32,6 @@ type FormData = {
   fullName: string;
   phone: string;
   email: string;
-  nationality: string;
   destination: string;
   jobCategory: string;
   experience: string;
@@ -59,19 +58,18 @@ export function JobApply() {
     const jobLabel = JOB_CATEGORIES.find(j => j.id === data.jobCategory)?.label ?? data.jobCategory;
 
     // Submit via Web3Forms + get WhatsApp link
-    const { waLink } = await submitForm({
+    const { waLink, emailSent } = await submitForm({
       subject: 'Job Application — VisaOVisa',
       name: data.fullName,
       phone: data.phone,
       email: data.email,
-      nationality: data.nationality,
       destination_country: data.destination,
       job_category: jobLabel,
       experience: data.experience,
       education: data.education,
       languages: data.languages,
       message: data.message,
-    });
+    }, '60aabe17-99d2-44bb-9305-b4908cac2b93');
 
     // Build a detailed WhatsApp message for easier reading
     const waMsg = encodeURIComponent(
@@ -79,7 +77,6 @@ export function JobApply() {
       `👤 Name: ${data.fullName}\n` +
       `📞 Phone: ${data.phone}\n` +
       `📧 Email: ${data.email || 'N/A'}\n` +
-      `🌍 Nationality: ${data.nationality}\n` +
       `🏳️ Destination: ${data.destination}\n` +
       `💼 Job: ${jobLabel}\n` +
       `⏳ Experience: ${data.experience}\n` +
@@ -90,7 +87,14 @@ export function JobApply() {
     const detailedLink = `https://wa.me/919873005319?text=${waMsg}`;
     setWhatsappLink(detailedLink);
     setSubmitted(true);
-    toast.success('Application submitted! We will contact you shortly.');
+    
+    toast.success(emailSent ? 'Application submitted!' : 'Application received!', {
+      description: emailSent
+        ? "We'll review your application and get back to you shortly."
+        : 'Tap \'Send via WhatsApp\' for the fastest response.',
+      duration: 6000,
+    });
+    
     reset();
     setSelectedJob('');
   };
@@ -197,6 +201,7 @@ export function JobApply() {
 
               {/* Application Form */}
               <form onSubmit={handleSubmit(onSubmit)} className="p-8">
+                <input type="hidden" {...register('jobCategory', { required: 'Job category is required' })} />
                 <h3 className="text-xl font-serif font-bold text-primary mb-6 flex items-center gap-2">
                   <span className="w-7 h-7 bg-secondary text-primary text-sm font-black rounded-full flex items-center justify-center">2</span>
                   Your Details
@@ -243,28 +248,6 @@ export function JobApply() {
                     />
                   </div>
 
-                  {/* Nationality */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-semibold text-primary flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-secondary" /> Nationality <span className="text-red-400">*</span>
-                    </label>
-                    <div className="relative">
-                      <select
-                        {...register('nationality', { required: 'Nationality is required' })}
-                        className="w-full bg-white border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20 transition-all appearance-none"
-                      >
-                        <option value="">Select nationality</option>
-                        <option>Indian</option>
-                        <option>Nepali</option>
-                        <option>Bangladeshi</option>
-                        <option>Sri Lankan</option>
-                        <option>Pakistani</option>
-                        <option>Other</option>
-                      </select>
-                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                    </div>
-                    {errors.nationality && <p className="text-red-500 text-xs">{errors.nationality.message}</p>}
-                  </div>
 
                   {/* Destination */}
                   <div className="space-y-1.5">

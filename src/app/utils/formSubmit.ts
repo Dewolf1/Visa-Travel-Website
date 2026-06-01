@@ -8,7 +8,7 @@
  *
  * Without a key, all forms still work perfectly via WhatsApp.
  */
-export const WEB3FORMS_KEY = '60aabe17-99d2-44bb-9305-b4908cac2b93';
+export const WEB3FORMS_KEY = '25f83354-7381-4410-bed4-b8f01b7b0eb5';
 
 export interface FormPayload {
   subject: string;
@@ -22,12 +22,14 @@ export interface FormPayload {
  * Submit form data. Returns true if email was sent, false if WhatsApp fallback.
  * Never throws — always resolves quickly so UI never freezes.
  */
-export async function submitForm(payload: FormPayload): Promise<{ waLink: string; emailSent: boolean }> {
+export async function submitForm(payload: FormPayload, customKey?: string): Promise<{ waLink: string; emailSent: boolean }> {
   // Always build the WhatsApp link first — it's the guaranteed delivery method
   const waLink = buildWhatsAppLink(payload);
 
+  const keyToUse = customKey || WEB3FORMS_KEY;
+
   // If no key configured, skip network entirely — respond immediately
-  if (!WEB3FORMS_KEY || WEB3FORMS_KEY === 'YOUR_WEB3FORMS_ACCESS_KEY') {
+  if (!keyToUse || keyToUse === 'YOUR_WEB3FORMS_ACCESS_KEY') {
     // Small artificial delay so the spinner feels natural
     await new Promise(r => setTimeout(r, 800));
     return { waLink, emailSent: false };
@@ -39,9 +41,16 @@ export async function submitForm(payload: FormPayload): Promise<{ waLink: string
     const timer = setTimeout(() => controller.abort(), 6000);
 
     const body = new FormData();
-    body.append('access_key', WEB3FORMS_KEY);
+    body.append('access_key', keyToUse);
     body.append('from_name', 'VisaOVisa Website');
+    
+    // Ensure email is always present and validly formatted for Web3Forms spam protection
+    const emailVal = payload.email && payload.email.trim() !== '' ? payload.email.trim() : 'no-reply@visaovisa.com';
+    body.append('email', emailVal);
+
     Object.entries(payload).forEach(([k, v]) => {
+      // Skip email since we already handled it explicitly above
+      if (k === 'email') return;
       if (v) body.append(k, v);
     });
 

@@ -117,7 +117,7 @@ export function CountryDetailsModal({ country, onClose }: CountryDetailsModalPro
       name: formData.name,
       phone: formData.phone,
       email: formData.email,
-      country: country.name,
+      destination_country: country.name,
       visa_type: formData.visaType,
       message: formData.message,
     });
