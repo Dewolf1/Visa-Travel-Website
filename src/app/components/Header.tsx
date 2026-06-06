@@ -62,7 +62,7 @@ export function Header() {
             >
               <div className="container mx-auto px-4 py-1.5 flex items-center justify-between">
                 <span className="opacity-70 hidden md:block">
-                  📍 Mezzanine Floor, L-119, KG Marg, Connaught Place, New Delhi — Mon–Sat 10AM–7PM
+                  🕒 Mon–Sat 10AM–7PM
                 </span>
                 <div className="flex items-center gap-5 ml-auto">
                   <a href="tel:+919873005319" className="flex items-center gap-1.5 hover:text-[#C9A84C] transition-colors">

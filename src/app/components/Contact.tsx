@@ -111,31 +111,11 @@ export function Contact() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-5 pt-4 border-t border-border/50">
-                  <div className="w-12 h-12 md:w-14 md:h-14 bg-primary text-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-                    <MapPin className="w-5 h-5 md:w-6 md:h-6" />
-                  </div>
-                  <div className="pt-1">
-                    <div className="text-sm font-semibold tracking-wide text-muted-foreground uppercase mb-1">Visit Our Office</div>
-                    <div className="text-base text-primary font-medium leading-tight">Mezzanine Floor, L-119, KG Marg</div>
-                    <div className="text-primary leading-tight mt-1 text-sm">Connaught Place, New Delhi 110001</div>
-                    <div className="text-sm text-secondary font-medium mt-2">Mon-Sat: 10:00 AM - 7:00 PM</div>
-                  </div>
-                </div>
+
               </div>
             </div>
 
-            {/* Map */}
-            <div className="bg-white p-2 rounded-2xl border border-border/60 shadow-lg overflow-hidden h-56 md:h-64">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.040055106655!2d77.2201!3d28.6302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd34208a3d43%3A0x1d3a5a7f9a1bd147!2sConnaught%20Place%2C%20New%20Delhi%2C%20Delhi%20110001!5e0!3m2!1sen!2sin!4v1716500000000!5m2!1sen!2sin"
-                width="100%" height="100%"
-                style={{ border: 0, borderRadius: '0.75rem' }}
-                allowFullScreen={false} loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="VisaOVisa Office Location"
-              />
-            </div>
+
           </motion.div>
 
           {/* Right: form or success */}

@@ -85,12 +85,7 @@ export function Footer() {
           <div className="lg:col-span-3">
             <h4 className="text-xl font-serif mb-6 text-secondary">Contact Info</h4>
             <ul className="space-y-5 text-blue-100/80">
-              <li className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center flex-shrink-0 border border-white/10">
-                  <MapPin className="w-4 h-4 text-secondary" />
-                </div>
-                <span className="pt-2 text-sm leading-relaxed">Mezzanine Floor, L-119, KG Marg, Connaught Place, New Delhi 110001</span>
-              </li>
+
               <li className="flex items-center gap-4 group cursor-pointer">
                 <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center flex-shrink-0 border border-white/10 group-hover:bg-secondary group-hover:border-secondary transition-colors">
                   <Phone className="w-4 h-4 text-secondary group-hover:text-primary transition-colors" />

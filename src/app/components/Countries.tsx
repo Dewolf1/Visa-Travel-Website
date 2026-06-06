@@ -5,12 +5,13 @@ import { CountryDetailsModal } from './CountryDetailsModal';
 
 const countries = [
   { name: 'Kuwait',       flag: '🇰🇼', popular: true,  desc: 'Work & Visit Visas',    visaTypes: ['Work Visa', 'Visit Visa', 'Tourist Visa', 'Business Visa'] },
-  { name: 'Saudi Arabia', flag: '🇸🇦', popular: true,  desc: 'Multiple Entry Visas',   visaTypes: ['Work Visa', 'Multiple Entry', 'Business Visa', 'Umrah Visa'] },
+  { name: 'Saudi Arabia', flag: '🇸🇦', popular: true,  desc: 'Work & Umrah Visas',     visaTypes: ['Work Visa', 'Business Visa', 'Umrah Visa'] },
   { name: 'UAE',          flag: '🇦🇪', popular: true,  desc: 'Tourist & Transit',       visaTypes: ['Tourist Visa', 'Transit Visa', 'Work Visa', 'Business Visa'] },
   { name: 'Qatar',        flag: '🇶🇦', popular: false, desc: 'Business Visas',          visaTypes: ['Business Visa', 'Work Visa', 'Visit Visa', 'Tourist Visa'] },
   { name: 'Bahrain',      flag: '🇧🇭', popular: false, desc: 'Work Permits',            visaTypes: ['Work Permit', 'Visit Visa', 'Business Visa', 'Tourist Visa'] },
   { name: 'Oman',         flag: '🇴🇲', popular: false, desc: 'Employment Visas',        visaTypes: ['Employment Visa', 'Visit Visa', 'Tourist Visa', 'Business Visa'] },
   { name: 'Russia',       flag: '🇷🇺', popular: false, desc: 'Tourist & Work Visas',    visaTypes: ['Tourist Visa', 'Work Visa', 'Business Visa', 'Student Visa'] },
+  { name: 'Singapore',    flag: '🇸🇬', popular: false, desc: 'Tourist & Work Visas',    visaTypes: ['Tourist Visa', 'Work Visa', 'Business Visa', 'Visit Visa'] },
 ];
 
 export type Country = typeof countries[0];
