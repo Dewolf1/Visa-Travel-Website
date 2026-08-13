@@ -12,7 +12,7 @@ export const AdminPage = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'admin123') { // Simple password gate
+    if (password === 'admin1998') { // Simple password gate
       setIsAuthenticated(true);
       setError('');
     } else {
