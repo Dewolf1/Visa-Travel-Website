@@ -1,17 +1,24 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Phone, Menu, X, MessageCircle, ChevronRight } from 'lucide-react';
+import { Phone, Menu, X, MessageCircle, ChevronRight, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Country, schengenCountries } from '../../data/countriesList';
+
 const NAV_LINKS = [
   { name: 'Services', href: '#services', sectionId: 'services' },
   { name: 'Visa Check', href: '#process', sectionId: 'process' },
   { name: 'Countries', href: '#countries', sectionId: 'countries' },
+  { name: 'Schengen', href: '#countries', sectionId: 'schengen', isMegaMenu: true },
   { name: 'Jobs', href: '#jobs', sectionId: 'jobs' },
   { name: 'About Us', href: '#about', sectionId: 'about' },
   { name: 'Reviews', href: '#testimonials', sectionId: 'testimonials' },
   { name: 'Contact', href: '#contact', sectionId: 'contact' },
 ];
 
-export function Header() {
+interface HeaderProps {
+  onOpenModal: (country: Country) => void;
+}
+
+export function Header({ onOpenModal }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActive] = useState('');
@@ -65,9 +72,15 @@ export function Header() {
                   🕒 Mon–Sat 10AM–7PM
                 </span>
                 <div className="flex items-center gap-5 ml-auto">
-                  <a href="tel:+919873005319" className="flex items-center gap-1.5 hover:text-[#C9A84C] transition-colors">
-                    <Phone className="w-3 h-3" /> +91 98730 05319
-                  </a>
+                  <div className="flex items-center gap-3">
+                    <a href="tel:+919873005319" className="flex items-center gap-1.5 hover:text-[#C9A84C] transition-colors">
+                      <Phone className="w-3 h-3" /> +91 98730 05319
+                    </a>
+                    <span className="text-white/50">|</span>
+                    <a href="tel:+919717248203" className="flex items-center gap-1.5 hover:text-[#C9A84C] transition-colors">
+                      +91 97172 48203
+                    </a>
+                  </div>
                   <a href="https://wa.me/919873005319" target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 hover:text-[#C9A84C] transition-colors">
                     <MessageCircle className="w-3 h-3" /> WhatsApp
@@ -108,17 +121,61 @@ export function Header() {
               <nav className="hidden md:flex items-center gap-0.5 flex-1 justify-center">
                 {NAV_LINKS.map(link => {
                   const active = activeSection === link.sectionId;
+                  
+                  if (link.isMegaMenu) {
+                    return (
+                      <div key={link.name} className="group relative">
+                        <a
+                          href={link.href}
+                          onClick={(e) => e.preventDefault()}
+                          className={`relative px-3.5 py-2 text-sm font-semibold rounded-lg transition-all duration-200 flex items-center gap-1 ${
+                            active
+                              ? 'text-[#C9A84C]'
+                              : scrolled
+                                ? 'text-[#0A1628] hover:text-[#C9A84C]'
+                                : 'text-white/90 hover:text-white'
+                          }`}
+                        >
+                          {link.name}
+                          <ChevronDown className="w-3.5 h-3.5 opacity-70 group-hover:rotate-180 transition-transform duration-300" />
+                        </a>
+
+                        {/* Mega Menu Dropdown */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                          <div className="bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-gray-100 p-6 w-[500px]">
+                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 pb-3 border-b border-gray-100">
+                              Schengen Visa Services
+                            </h4>
+                            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                              {schengenCountries.map(country => (
+                                <button
+                                  key={country.name}
+                                  onClick={() => onOpenModal(country)}
+                                  className="text-left px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-[#C9A84C] hover:bg-gray-50 rounded-lg transition-all duration-300 hover:translate-x-1 hover:shadow-sm flex items-center gap-2"
+                                >
+                                  <span>{country.flag}</span>
+                                  {country.name} Visa
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
                   return (
                     <a
                       key={link.name}
                       href={link.href}
                       onClick={closeMenu}
-                      className={`relative px-3.5 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${active
+                      className={`relative px-3.5 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${
+                        active
                           ? 'text-[#C9A84C]'
                           : scrolled
                             ? 'text-[#0A1628] hover:text-[#C9A84C]'
                             : 'text-white/90 hover:text-white'
-                        }`}
+                      }`}
                     >
                       {link.name}
                       {active && (
@@ -134,15 +191,8 @@ export function Header() {
               </nav>
 
               {/* Desktop CTAs */}
-              <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-                <a
-                  href="tel:+919873005319"
-                  className={`flex items-center gap-2 text-sm font-bold px-3 py-2 rounded-lg transition-all ${scrolled ? 'text-[#0A1628] hover:text-[#C9A84C]' : 'text-white/90 hover:text-white'
-                    }`}
-                >
-                  <Phone className="w-4 h-4 text-[#C9A84C]" />
-                  <span className="hidden lg:inline">+91 98730 05319</span>
-                </a>
+              <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+
 
                 <a
                   href="https://wa.me/919873005319"
@@ -207,10 +257,15 @@ export function Header() {
             </nav>
 
             <div className="mt-10 flex flex-col gap-3">
-              <a href="tel:+919873005319"
-                className="flex items-center justify-center gap-2 border border-white/20 text-white py-4 rounded-xl text-base font-semibold hover:bg-white/10 transition-colors">
-                <Phone className="w-5 h-5 text-[#C9A84C]" /> +91 98730 05319
-              </a>
+              <div className="flex flex-col gap-2 border border-white/20 text-white py-4 rounded-xl items-center hover:bg-white/10 transition-colors">
+                <a href="tel:+919873005319" className="flex items-center justify-center gap-2 text-base font-semibold">
+                  <Phone className="w-5 h-5 text-[#C9A84C]" /> +91 98730 05319
+                </a>
+                <div className="w-12 h-px bg-white/20"></div>
+                <a href="tel:+919717248203" className="flex items-center justify-center gap-2 text-base font-semibold">
+                  <Phone className="w-5 h-5 text-[#C9A84C]" /> +91 97172 48203
+                </a>
+              </div>
               <a href="https://wa.me/919873005319" target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 bg-[#25D366] text-white py-4 rounded-xl text-base font-bold">
                 <MessageCircle className="w-5 h-5" /> Chat on WhatsApp
