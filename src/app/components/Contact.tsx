@@ -81,15 +81,18 @@ export function Contact() {
               <h3 className="text-2xl mb-8 text-primary font-serif font-bold">Contact Information</h3>
 
               <div className="space-y-6">
-                <a href="tel:+919873005319" className="flex items-start gap-5 group/item">
+                <div className="flex items-start gap-5 group/item">
                   <div className="w-12 h-12 md:w-14 md:h-14 bg-accent text-secondary rounded-xl flex items-center justify-center flex-shrink-0 group-hover/item:bg-secondary group-hover/item:text-white transition-all duration-300 shadow-sm">
                     <Phone className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div className="pt-1">
                     <div className="text-sm font-semibold tracking-wide text-muted-foreground uppercase mb-1">Call Us</div>
-                    <div className="text-lg md:text-xl text-primary font-bold group-hover/item:text-secondary transition-colors">+91 98730 05319</div>
+                    <div className="flex flex-col gap-1">
+                      <a href="tel:+919873005319" className="text-lg md:text-xl text-primary font-bold hover:text-secondary transition-colors">+91 98730 05319</a>
+                      <a href="tel:+919717248203" className="text-lg md:text-xl text-primary font-bold hover:text-secondary transition-colors">+91 97172 48203</a>
+                    </div>
                   </div>
-                </a>
+                </div>
 
                 <a href="https://wa.me/919873005319" target="_blank" rel="noopener noreferrer" className="flex items-start gap-5 group/item">
                   <div className="w-12 h-12 md:w-14 md:h-14 bg-green-50 text-green-600 rounded-xl flex items-center justify-center flex-shrink-0 group-hover/item:bg-green-600 group-hover/item:text-white transition-all duration-300 shadow-sm">
@@ -111,6 +114,19 @@ export function Contact() {
                   </div>
                 </div>
 
+                <div className="flex items-start gap-5 group/item">
+                  <div className="w-12 h-12 md:w-14 md:h-14 bg-accent text-secondary rounded-xl flex items-center justify-center flex-shrink-0 group-hover/item:bg-secondary group-hover/item:text-white transition-all duration-300 shadow-sm">
+                    <MapPin className="w-5 h-5 md:w-6 md:h-6" />
+                  </div>
+                  <div className="pt-1">
+                    <div className="text-sm font-semibold tracking-wide text-muted-foreground uppercase mb-1">Address</div>
+                    <div className="text-base text-primary font-medium leading-relaxed pr-4">
+                      J-1, First Floor Himalaya House-23,<br />
+                      K.G. Marg, Connaught Place,<br />
+                      New Delhi-110001
+                    </div>
+                  </div>
+                </div>
 
               </div>
             </div>
@@ -255,6 +271,27 @@ export function Contact() {
             )}
           </motion.div>
         </div>
+
+        {/* Map Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-12 md:mt-16 max-w-7xl mx-auto w-full h-[350px] md:h-[450px] rounded-2xl overflow-hidden shadow-xl border border-border/60 relative group"
+        >
+          <div className="absolute inset-0 bg-primary/5 group-hover:bg-transparent transition-colors duration-500 pointer-events-none z-10 mix-blend-multiply"></div>
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.2618!2d77.2215868!3d28.628113!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd09dccf044f%3A0x527a2d401853b004!2sHimalaya%20house%20Cp!5e0!3m2!1sen!2sin!4v1714407000000!5m2!1sen!2sin" 
+            width="100%" 
+            height="100%" 
+            style={{ border: 0 }} 
+            allowFullScreen={false} 
+            loading="lazy" 
+            referrerPolicy="no-referrer-when-downgrade"
+            className="grayscale-[0.5] group-hover:grayscale-0 transition-all duration-700 w-full h-full border-0"
+          ></iframe>
+        </motion.div>
       </div>
     </section>
   );

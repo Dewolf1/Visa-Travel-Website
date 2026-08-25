@@ -54,6 +54,16 @@ export function Footer() {
                 <Instagram className="w-5 h-5" />
               </a>
             </div>
+
+            <button 
+              onClick={() => window.dispatchEvent(new Event('open-chatbot'))}
+              className="mt-8 flex items-center gap-2.5 bg-[#C9A84C] text-[#0A1628] px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-[#E6D08B] hover:-translate-y-1 transition-all"
+            >
+              <div className="bg-[#0A1628] w-6 h-6 rounded-full flex items-center justify-center">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#C9A84C]" />
+              </div>
+              Chat with AI Assistant
+            </button>
           </div>
 
           <div className="lg:col-span-2">
@@ -86,17 +96,28 @@ export function Footer() {
             <h4 className="text-xl font-serif mb-6 text-secondary">Contact Info</h4>
             <ul className="space-y-5 text-blue-100/80">
 
-              <li className="flex items-center gap-4 group cursor-pointer">
+              <li className="flex items-start gap-4 group cursor-pointer">
                 <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center flex-shrink-0 border border-white/10 group-hover:bg-secondary group-hover:border-secondary transition-colors">
                   <Phone className="w-4 h-4 text-secondary group-hover:text-primary transition-colors" />
                 </div>
-                <a href="tel:+919873005319" className="hover:text-white transition-colors pt-1">+91 98730 05319</a>
+                <div className="flex flex-col pt-1 gap-1">
+                  <a href="tel:+919873005319" className="hover:text-white transition-colors">+91 98730 05319</a>
+                  <a href="tel:+919717248203" className="hover:text-white transition-colors">+91 97172 48203</a>
+                </div>
               </li>
               <li className="flex items-center gap-4 group cursor-pointer">
                 <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center flex-shrink-0 border border-white/10 group-hover:bg-secondary group-hover:border-secondary transition-colors">
                   <Mail className="w-4 h-4 text-secondary group-hover:text-primary transition-colors" />
                 </div>
                 <a href="mailto:contact@visaovisa.com" className="hover:text-white transition-colors pt-1">contact@visaovisa.com</a>
+              </li>
+              <li className="flex items-start gap-4 group cursor-pointer">
+                <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center flex-shrink-0 border border-white/10 group-hover:bg-secondary group-hover:border-secondary transition-colors">
+                  <MapPin className="w-4 h-4 text-secondary group-hover:text-primary transition-colors" />
+                </div>
+                <span className="hover:text-white transition-colors pt-1.5 leading-relaxed text-sm pr-4">
+                  J-1, First Floor Himalaya House-23, K.G. Marg, Connaught Place, New Delhi-110001
+                </span>
               </li>
             </ul>
           </div>

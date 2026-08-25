@@ -11,6 +11,7 @@ interface Country {
   popular: boolean;
   desc: string;
   visaTypes: string[];
+  isSchengen?: boolean;
 }
 
 interface CountryDetailsModalProps {
@@ -18,47 +19,64 @@ interface CountryDetailsModalProps {
   onClose: () => void;
 }
 
-// Mock requirements data based on visa types
-const getVisaRequirements = (visaType: string) => {
-  const requirements = {
-    'Tourist Visa': [
-      'Original passport containing at least 2 blank pages for visas, valid for a period of 6 months after the visa expires.',
-      'Online application form completed and signed by the applicant.',
-      'One colour photograph 3.5 x 4.5 cm with light-coloured background.',
-      'Tourist confirmation letter or hotel booking confirmation.',
-      'Day-to-day itinerary if travel is more than 14 days.',
-      'Confirmed return flight tickets.'
+const getVisaRequirements = (visaType: string, country: Country) => {
+  const isSchengen = country.isSchengen;
+  const cName = country.name;
+
+  const requirements: Record<string, string[]> = {
+    'Tourist Visa': isSchengen ? [
+      `Original passport containing at least 2 blank pages, valid for 6 months beyond intended stay in the Schengen Area.`,
+      `Completed and signed Schengen visa application form for ${cName}.`,
+      `Two recent colour photographs (3.5 x 4.5 cm) meeting ICAO standards with a light background.`,
+      `Travel Medical Insurance covering emergency medical, hospitalization, and repatriation (minimum €30,000 coverage across all Schengen states).`,
+      `Confirmed flight itineraries and proof of accommodation (e.g., hotel bookings in ${cName}).`,
+      `Financial Proof (recent bank statements for the last 6 months, stamped and signed, and salary slips).`,
+      `Cover letter detailing the purpose of your trip to ${cName} and your planned travel itinerary.`
+    ] : [
+      `Original passport containing at least 2 blank pages for visas, valid for a period of 6 months after the visa expires.`,
+      `Online application form completed and signed by the applicant for ${cName}.`,
+      `One colour photograph 3.5 x 4.5 cm with light-coloured background.`,
+      `Tourist confirmation letter or hotel booking confirmation in ${cName}.`,
+      `Day-to-day itinerary if travel is more than 14 days.`,
+      `Confirmed return flight tickets.`,
+      `Proof of sufficient funds (bank statements for the last 6 months).`
     ],
-    'Business Visa': [
-      'Original passport containing at least 2 blank pages for visas, valid for a period of 6 months after the visa expires.',
-      'Online application form completed and signed by the applicant.',
-      'One colour photograph 3.5 x 4.5 cm with light-coloured background.',
-      'Invitation letter from the host organization or Ministry of Foreign Affairs.',
-      'Covering letter from the applicant\'s company stating the purpose of visit.',
-      'Company bank statement for the last 6 months.'
+    'Business Visa': isSchengen ? [
+      `Original passport valid for at least 6 months beyond intended stay in the Schengen Area.`,
+      `Completed and signed Schengen business visa application form for ${cName}.`,
+      `Travel Medical Insurance (minimum €30,000 coverage).`,
+      `Invitation letter from the host organization/company in ${cName} detailing the purpose and duration of stay.`,
+      `Covering letter from your current employer stating your position, purpose of visit, and financial sponsorship details.`,
+      `Company bank statements for the last 6 months.`
+    ] : [
+      `Original passport containing at least 2 blank pages, valid for 6 months.`,
+      `Application form completed and signed by the applicant for ${cName}.`,
+      `Invitation letter from the host organization or Ministry of Foreign Affairs in ${cName}.`,
+      `Covering letter from the applicant's company stating the purpose of visit.`,
+      `Company bank statement for the last 6 months.`
     ],
     'Work Visa': [
-      'Original passport with 6 months validity.',
-      'Employment contract or letter of intent from the employer.',
-      'Educational certificates (apostilled/attested).',
-      'Medical fitness certificate from an authorized center.',
-      'Police clearance certificate (PCC).'
+      `Original passport with 6 months validity.`,
+      `Employment contract or letter of intent from the employer in ${cName}.`,
+      `Educational certificates (apostilled/attested).`,
+      `Medical fitness certificate from an authorized center.`,
+      `Police clearance certificate (PCC).`
     ],
     'Transit Visa': [
-      'Original passport valid for at least 6 months.',
-      'Valid visa for the destination country.',
-      'Confirmed onward flight tickets.',
-      'One recent passport-sized photograph.'
+      `Original passport valid for at least 6 months.`,
+      `Valid visa for the destination country.`,
+      `Confirmed onward flight tickets from ${cName}.`,
+      `One recent passport-sized photograph.`
     ]
   };
   
   // Default fallback
   const defaultReq = [
-    'Original passport valid for at least 6 months.',
-    'Completed and signed visa application form.',
-    'Two recent passport-sized photographs.',
-    'Proof of sufficient funds for the duration of stay.',
-    'Confirmed travel itinerary.'
+    `Original passport valid for at least 6 months.`,
+    `Completed and signed visa application form for ${cName}.`,
+    `Two recent passport-sized photographs.`,
+    `Proof of sufficient funds for the duration of stay.`,
+    `Confirmed travel itinerary.`
   ];
   
   // Match key or fallback
@@ -71,14 +89,24 @@ const getVisaRequirements = (visaType: string) => {
 };
 
 // Mock table details based on visa types
-const getVisaDetails = (visaType: string) => {
+const getVisaDetails = (visaType: string, country: Country) => {
+  const isSchengen = country.isSchengen;
+
+  if (isSchengen) {
+    if (visaType.toLowerCase().includes('business')) {
+      return { type: 'Short-Stay (Type C)', validity: 'up to 90 days (within 180 days)', processing: 'Approx. 15 Working days' };
+    } else {
+      return { type: 'Short-Stay (Type C)', validity: 'up to 90 days (within 180 days)', processing: 'Approx. 15 Working days' };
+    }
+  }
+
   if (visaType.toLowerCase().includes('business')) {
     return { type: 'Single/ Double Entry', validity: 'up to 1 years', processing: 'Minimum 5 Working days' };
   } else if (visaType.toLowerCase().includes('work')) {
     return { type: 'Single Entry', validity: 'up to 2 years', processing: 'Minimum 10-15 Working days' };
   } else {
     // Tourist / Visit
-    return { type: 'Single/ Double Entry', validity: 'up to 30 days', processing: 'Minimum 5 Working days' };
+    return { type: 'Single/ Double Entry', validity: 'up to 30/90 days', processing: 'Minimum 5 Working days' };
   }
 };
 
@@ -296,13 +324,13 @@ export function CountryDetailsModal({ country, onClose }: CountryDetailsModalPro
                       <tbody>
                         <tr className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors">
                           <td className="px-5 py-4 text-sm text-gray-800 font-medium">
-                            {getVisaDetails(activeTab).type}
+                            {getVisaDetails(activeTab, country).type}
                           </td>
                           <td className="px-5 py-4 text-sm text-gray-600">
-                            {getVisaDetails(activeTab).validity}
+                            {getVisaDetails(activeTab, country).validity}
                           </td>
                           <td className="px-5 py-4 text-sm text-gray-600">
-                            {getVisaDetails(activeTab).processing}
+                            {getVisaDetails(activeTab, country).processing}
                           </td>
                           <td className="px-5 py-4 text-center">
                             <button 
@@ -321,15 +349,15 @@ export function CountryDetailsModal({ country, onClose }: CountryDetailsModalPro
                   <div className="md:hidden flex flex-col p-4 gap-3.5 bg-gray-50/30">
                      <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                        <span className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wide">Type Of Visa</span>
-                       <span className="text-sm font-semibold text-gray-800 text-right">{getVisaDetails(activeTab).type}</span>
+                       <span className="text-sm font-semibold text-gray-800 text-right">{getVisaDetails(activeTab, country).type}</span>
                      </div>
                      <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                        <span className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wide">Validity</span>
-                       <span className="text-sm font-semibold text-gray-800 text-right">{getVisaDetails(activeTab).validity}</span>
+                       <span className="text-sm font-semibold text-gray-800 text-right">{getVisaDetails(activeTab, country).validity}</span>
                      </div>
                      <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                        <span className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wide">Processing</span>
-                       <span className="text-sm font-semibold text-gray-800 text-right">{getVisaDetails(activeTab).processing}</span>
+                       <span className="text-sm font-semibold text-gray-800 text-right">{getVisaDetails(activeTab, country).processing}</span>
                      </div>
                      <div className="pt-1">
                         <button 
@@ -357,7 +385,7 @@ export function CountryDetailsModal({ country, onClose }: CountryDetailsModalPro
                      </p>
                      
                      <ul className="space-y-4">
-                       {getVisaRequirements(activeTab).map((req, i) => (
+                       {getVisaRequirements(activeTab, country).map((req, i) => (
                          <li key={i} className="flex items-start gap-3 text-gray-700 text-sm sm:text-base">
                            <span className="font-bold text-[#E32144] mt-0.5">{i + 1}.</span>
                            <span dangerouslySetInnerHTML={{ __html: req.replace(/Important:/g, '<strong>Important:</strong>').replace(/Please note:/g, '<em><strong>Please note:</strong></em>') }} />
@@ -366,11 +394,28 @@ export function CountryDetailsModal({ country, onClose }: CountryDetailsModalPro
                      </ul>
                      
                      <div className="mt-8 pt-6 border-t border-gray-100">
-                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3">
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 mb-6">
                            <Info className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                            <p className="text-sm text-amber-800">
                              <strong>Note:</strong> Additional documents may be required based on the consulate's discretion. Ensure all documents are clear and valid.
                            </p>
+                        </div>
+                        
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                           <a 
+                             href={`https://wa.me/919873005319?text=${encodeURIComponent(`Hi, I would like to inquire about the ${country.name} ${activeTab}.`)}`}
+                             target="_blank" rel="noopener noreferrer"
+                             className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3.5 rounded-xl hover:bg-[#1ebe5d] transition-all shadow-md active:scale-95"
+                           >
+                             <MessageCircle className="w-5 h-5" /> Enquire on WhatsApp
+                           </a>
+                           
+                           <a 
+                             href="tel:+919873005319"
+                             className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white border-2 border-gray-200 text-gray-700 font-bold px-6 py-3 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm active:scale-95"
+                           >
+                             Call +91 98730 05319
+                           </a>
                         </div>
                      </div>
                   </div>

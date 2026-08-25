@@ -1,37 +1,13 @@
-import { useState, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { Globe2, ArrowRight } from 'lucide-react';
-import { CountryDetailsModal } from './CountryDetailsModal';
+import { Country, allCountries } from '../../data/countriesList';
+import { Link } from 'react-router-dom';
 
-const countries = [
-  { name: 'Kuwait',       flag: '🇰🇼', popular: true,  desc: 'Work & Visit Visas',    visaTypes: ['Work Visa', 'Visit Visa', 'Tourist Visa', 'Business Visa'] },
-  { name: 'Saudi Arabia', flag: '🇸🇦', popular: true,  desc: 'Work & Umrah Visas',     visaTypes: ['Work Visa', 'Business Visa', 'Umrah Visa'] },
-  { name: 'UAE',          flag: '🇦🇪', popular: true,  desc: 'Tourist & Transit',       visaTypes: ['Tourist Visa', 'Transit Visa', 'Work Visa', 'Business Visa'] },
-  { name: 'Qatar',        flag: '🇶🇦', popular: false, desc: 'Business Visas',          visaTypes: ['Business Visa', 'Work Visa', 'Visit Visa', 'Tourist Visa'] },
-  { name: 'Bahrain',      flag: '🇧🇭', popular: false, desc: 'Work Permits',            visaTypes: ['Work Permit', 'Visit Visa', 'Business Visa', 'Tourist Visa'] },
-  { name: 'Oman',         flag: '🇴🇲', popular: false, desc: 'Employment Visas',        visaTypes: ['Employment Visa', 'Visit Visa', 'Tourist Visa', 'Business Visa'] },
-  { name: 'Russia',       flag: '🇷🇺', popular: false, desc: 'Tourist & Work Visas',    visaTypes: ['Tourist Visa', 'Work Visa', 'Business Visa', 'Student Visa'] },
-  { name: 'Singapore',    flag: '🇸🇬', popular: false, desc: 'Tourist & Work Visas',    visaTypes: ['Tourist Visa', 'Work Visa', 'Business Visa', 'Visit Visa'] },
-];
+interface CountriesProps {
+  onOpenModal: (country: Country) => void;
+}
 
-export type Country = typeof countries[0];
-
-export function Countries() {
-  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-
-  const openModal = useCallback((country: Country) => setSelectedCountry(country), []);
-  const closeModal = useCallback(() => setSelectedCountry(null), []);
-
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (selectedCountry) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [selectedCountry]);
-
+export function Countries({ onOpenModal }: CountriesProps) {
   return (
     <>
       <section id="countries" className="py-24 bg-primary relative overflow-hidden">
@@ -63,12 +39,12 @@ export function Countries() {
 
           {/* Country grid — single responsive grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 max-w-6xl mx-auto">
-            {countries.map((country, idx) => (
+            {allCountries.map((country, idx) => (
               <CountryCard
                 key={idx}
                 country={country}
                 idx={idx}
-                onClick={() => openModal(country)}
+                onClick={() => onOpenModal(country)}
               />
             ))}
           </div>
@@ -96,12 +72,6 @@ export function Countries() {
         </div>
       </section>
 
-      {/* Modal — rendered via portal at body level */}
-      <AnimatePresence>
-        {selectedCountry && (
-          <CountryDetailsModal country={selectedCountry} onClose={closeModal} />
-        )}
-      </AnimatePresence>
     </>
   );
 }
